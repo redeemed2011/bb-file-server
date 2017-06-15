@@ -1,0 +1,14 @@
+[Unit]
+Description=BB-File misc services
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/bb-file-server/
+ExecStart=/bin/bash /opt/bb-file-server/start-docker-containers.sh
+ExecStop=/bin/bash /opt/bb-file-server/stop-docker-containers.sh
+#ExecReload=/bin/bash /opt/bb-file-server/stop-docker-containers.sh && /bin/bash /opt/bb-file-server/start-docker-containers.sh
+#KillMode=process
+RemainAfterExit=True
+
+[Install]
+WantedBy=multi-user.target
