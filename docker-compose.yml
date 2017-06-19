@@ -1,1 +1,211 @@
 version: "3"
+
+services:
+  portainer:
+    image: portainer/portainer
+    privileged: true
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    ports:
+    - 9000:9000
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /data/portainer:/data
+
+  mariadb:
+    image: linuxserver/mariadb
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    env_file:
+    - /opt/bb-file-server/.secrets/mysql.env
+    networks:
+    - web
+    ports:
+    - 3306:3306
+    volumes:
+    - /data/mariadb:/config
+
+  duckdns:
+    image: linuxserver/duckdns
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    env_file:
+    - /opt/bb-file-server/.secrets/duckdns.env
+
+  openvpn:
+    image: linuxserver/openvpn-as
+    network_mode: host
+    privileged: true
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    #- INTERFACE=enp0s31f6
+    - INTERFACE=bridge0
+    #ports:
+    #- 943:943
+    #- 9443:9443
+    #- 1194:1194
+    volumes:
+    - /data/openvpn-as:/config
+
+  resilio:
+    image: linuxserver/resilio-sync
+    #network_mode: host
+    privileged: true
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    ports:
+    - 8888:8888
+    - 55555:55555
+    - 1900:1900
+    - 5351:5351
+    - 3838:3838
+    - 4000:4000
+    - 3000:3000
+    - 3001:3001
+    - 4000:4000/udp
+    - 3000:3000/udp
+    - 3001:3001/udp
+    volumes:
+    - /data/resilio-sync/config:/config
+    - /data/resilio-sync/folders:/sync
+
+  syncthing:
+    image: linuxserver/syncthing
+    network_mode: host
+    privileged: true
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    #ports:
+    #- 8384:8384
+    #- 21027:21027
+    #- 22000:22000
+    volumes:
+    - /data/syncthing/config:/config
+    - /data/syncthing/folders:/sync
+
+  freshrss:
+    image: linuxserver/freshrss
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    links:
+    - mariadb
+    networks:
+    - web
+    #ports:
+    #- 8080:80
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /data/freshrss:/config
+
+  letsencrypt:
+    image: linuxserver/letsencrypt
+    # network_mode: host
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    - URL=duckdns.org
+    - ONLY_SUBDOMAINS=true
+    - DHLEVEL=2048
+    env_file:
+    - /opt/bb-file-server/.secrets/letsencrypt.env
+    networks:
+    - web
+    ports:
+    - 443:443
+    volumes:
+    - /data/letsencrypt:/config
+
+  oauth-firewall:
+    image: oauth-firewall
+    restart: always
+    build:
+      context: /opt/bb-file-server/oauth-firewall/
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    networks:
+    - web
+    #ports:
+    #- 4180:4180
+    volumes:
+    - /data/oauth-firewall/:/opt/oauth2-proxy/etc/
+    #- /data/oauth-firewall:/config
+    command:
+    - -http-address=http://0.0.0.0:4180
+    - -redirect-url=${OAUTH_REDIRECT_URL}
+    - -upstream=file:///dev/null
+    - -provider=google
+    - -ssl-insecure-skip-verify=true
+    - -client-id=${OAUTH_CLIENT_ID}
+    - -client-secret=${OAUTH_CLIENT_SECRET}
+    - -authenticated-emails-file=/opt/oauth2-proxy/etc/authorized_emails
+    - -cookie-expire=4h
+    - -cookie-refresh=1h
+    - -cookie-secret=${OAUTH_COOKIE_SECRET}
+    - -cookie-secure=true
+    - -cookie-httponly=false
+    # - -cookie-domain=something.duckdns.org
+    # - -https-address=https://0.0.0.0:443
+
+  # -redirect-url : Defaults to the "https://" + requested host header + "/oauth2/callback".
+  # -upstream: It should never use the upstream since we are only going to talk with the OAuth2 Proxy when we need to auth.
+  # -cookie-httponly: HttpOnly - httponly cookies are not readable by javascript (recommended).
+
+  plex:
+    image: linuxserver/plex
+    restart: always
+    privileged: true
+    network_mode: host
+    #network_mode: bridge
+    #ports:
+    #- 32400:32400
+    #- 32400:32400/udp
+    #- 32469:32469
+    #- 32469:32469/udp
+    #- 5354:5353/udp
+    #- 1900:1900/udp
+    environment:
+    - PUID=1000
+    - PLEX_UID=1000
+    - PGID=1000
+    - PLEX_GID=1000
+    - TZ=America/Chicago
+    - VERSION=latest
+    - HOSTNAME=${HOSTNAME}
+    # - PLEX_CLAIM=...
+    volumes:
+    - /data/plex:/config
+    - /data/media:/data
+    tmpfs:
+    - /transcode
+
+networks:
+  web:
+
+secrets:
+  mysql_root_pass:
+    file: /opt/bb-file-server/.secrets/mysql_root_pass.txt

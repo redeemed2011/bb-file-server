@@ -1,0 +1,3 @@
+SUBSYSTEM=="block", KERNEL=="sr[0-9]*", ACTION=="change", ENV{ID_CDROM_MEDIA}=="1", \
+ENV{DEBUG}="true", ENV{MKV_GID}="$(id -g ${USER})", ENV{MKV_UID}="$(id -u ${USER})", \
+RUN+="/bin/bash /opt/bb-file-server/run-auto-makemkv.sh"
