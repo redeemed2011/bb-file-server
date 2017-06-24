@@ -32,7 +32,7 @@ if [ ! -e '/opt/bb-file-server/.secrets/mysql_root_pass.txt' ]; then
 fi
 
 # Generate mysql container environment file.
-tee /opt/bb-file-server/.secrets/mysql.env <-"EOF" > /dev/null 2>&1
+tee /opt/bb-file-server/.secrets/mysql.env <<-"EOF" > /dev/null 2>&1
 MYSQL_ROOT_PASSWORD=$(cat /opt/bb-file-server/.secrets/mysql_root_pass.txt)
 EOF
 
