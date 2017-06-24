@@ -152,9 +152,9 @@ runConfigWizard() {
 
 
   # Prompt for DuckDNS values.
-  printf "\n\nDuckDNS subdomains value:"
+  printf "\n\nDuckDNS subdomains value:  (e.g. the 'mysite' of mysite.duckdns.org)\n"
   IFS= read -r duckdnsSubDomains
-  printf "\n\nDuckDNS token value:"
+  printf "\n\nDuckDNS token value:  (log into https://www.duckdns.org to see your token)\n"
   IFS= read -r duckdnsToken
 
   # Save DuckDNS enironment file.
@@ -165,7 +165,7 @@ EOF
 
 
   # Prompt for LetsEncrypt email.
-  printf "\n\nLetsEncrypt email value:"
+  printf "\n\nEmail address used for LetsEncrypt:\n"
   IFS= read -r letsencryptEmail
 
   # Save LetsEncrypt enironment file.
@@ -176,15 +176,15 @@ EOF
 
 
   # Prompt for OAuth Firewall values.
-  printf "\n\nOAuth Firewall redirect URL:"
+  printf "\n\nOAuth Firewall redirect URL: (e.g. https://mysite.duckdns.org/oauth2/callback)\n"
   IFS= read -r oauthFirewallRedirectURL
-  printf "\n\nOAuth Firewall client ID:"
+  printf "\n\nOAuth Firewall client ID:\n"
   IFS= read -r oauthFirewallClientID
-  printf "\n\nOAuth Firewall client secret:"
+  printf "\n\nOAuth Firewall client secret:\n"
   IFS= read -r oauthFirewallClientSecret
 
   # OAuth general config.
-  tee /opt/bb-file-server/.secrets/oauth-firewall.env <<-"EOF" > /dev/null 2>&1
+  sudo tee /opt/bb-file-server/.secrets/oauth-firewall.env <<-"EOF" > /dev/null 2>&1
 OAUTH_REDIRECT_URL=${oauthFirewallRedirectURL}
 OAUTH_CLIENT_ID=${oauthFirewallClientID}
 OAUTH_CLIENT_SECRET=${oauthFirewallClientSecret}
@@ -192,15 +192,15 @@ EOF
 
 
   # OAuth Firewall authorized emails list.
-  printf "\n\nPress ENTER when you are ready to open an editor to populate the OAuth Firewall's allowed email addresses file. Put a single email address on each line."
+  printf "\n\nPress ENTER when you are ready to open an editor to populate the OAuth Firewall's allowed email addresses file. Put a single email address on each line.\n"
   # Create the file if it does not exist.
   if [ ! -e '/data/oauth-firewall/authorized_emails' ]; then
-    tee /data/oauth-firewall/authorized_emails <<-"EOF" > /dev/null 2>&1
+    sudo tee /data/oauth-firewall/authorized_emails <<-"EOF" > /dev/null 2>&1
 ${letsencryptEmail}
 EOF
   fi
   # Open an editor.
-  ${EDITOR} /data/oauth-firewall/authorized_emails
+  sudo nano /data/oauth-firewall/authorized_emails
 }
 
 setupBBFileService() {
