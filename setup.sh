@@ -152,7 +152,7 @@ runConfigWizard() {
   IFS= read -r duckdnsToken
 
   # Save DuckDNS enironment file.
-  tee /opt/bb-file-server/.secrets/duckdns.env <<-"EOF" > 2>&1 > /dev/null
+  tee /opt/bb-file-server/.secrets/duckdns.env <<-"EOF" > /dev/null 2>&1
 SUBDOMAINS=${duckdnsSubDomains}
 TOKEN=${duckdnsToken}
 EOF
@@ -163,7 +163,7 @@ EOF
   IFS= read -r letsencryptEmail
 
   # Save LetsEncrypt enironment file.
-  tee /opt/bb-file-server/.secrets/letsencrypt.env <<-"EOF" > 2>&1 > /dev/null
+  tee /opt/bb-file-server/.secrets/letsencrypt.env <<-"EOF" > /dev/null 2>&1
 EMAIL=${letsencryptEmail}
 SUBDOMAINS=${duckdnsSubDomains}
 EOF
@@ -178,7 +178,7 @@ EOF
   IFS= read -r oauthFirewallClientSecret
 
   # OAuth general config.
-  tee /opt/bb-file-server/.secrets/oauth-firewall.env <<-"EOF" > 2>&1 > /dev/null
+  tee /opt/bb-file-server/.secrets/oauth-firewall.env <<-"EOF" > /dev/null 2>&1
 OAUTH_REDIRECT_URL=${oauthFirewallRedirectURL}
 OAUTH_CLIENT_ID=${oauthFirewallClientID}
 OAUTH_CLIENT_SECRET=${oauthFirewallClientSecret}
@@ -189,7 +189,7 @@ EOF
   echo "\n\nPress ENTER when you are ready to open an editor to populate the OAuth Firewall's allowed email addresses file. Put a single email address on each line."
   # Create the file if it does not exist.
   if [ ! -e '/data/oauth-firewall/authorized_emails' ]; then
-    tee /data/oauth-firewall/authorized_emails <<-"EOF" > 2>&1 > /dev/null
+    tee /data/oauth-firewall/authorized_emails <<-"EOF" > /dev/null 2>&1
 ${letsencryptEmail}
 EOF
   fi
