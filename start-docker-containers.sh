@@ -28,16 +28,17 @@ fi
 
 # Generate mysql root password if it has not already been done.
 if [ ! -e '/opt/bb-file-server/.secrets/mysql_root_pass.txt' ]; then
-  base64 /dev/urandom | sudo head -c 64 > /opt/bb-file-server/.secrets/mysql_root_pass.txt
+  base64 /dev/urandom | head -c 64 > /opt/bb-file-server/.secrets/mysql_root_pass.txt
 fi
 
 # Generate mysql container environment file.
-tee /opt/bb-file-server/.secrets/mysql.env <<-"EOF" > /dev/null 2>&1
-MYSQL_ROOT_PASSWORD=$(cat /opt/bb-file-server/.secrets/mysql_root_pass.txt)
+MYSQL_ROOT_PASSWORD="$(cat /opt/bb-file-server/.secrets/mysql_root_pass.txt)"
+tee /opt/bb-file-server/.secrets/mysql.env <<-EOF > /dev/null 2>&1
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 EOF
 
 # Generate a random cookie secret because we don't need to remember it after each reboot. It'll just cause a re-auth.
-OAUTH_COOKIE_SECRET="$(base64 /dev/urandom | sudo head -c 64)"
+OAUTH_COOKIE_SECRET="$(base64 /dev/urandom | head -c 64)"
 export OAUTH_COOKIE_SECRET
 
 # For general use.
