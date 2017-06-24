@@ -143,8 +143,6 @@ services:
     restart: always
     build:
       context: /opt/bb-file-server/oauth-firewall/
-    env_file:
-    - /opt/bb-file-server/.secrets/oauth-firewall.env
     environment:
     - PUID=1000
     - PGID=1000

@@ -41,6 +41,9 @@ EOF
 OAUTH_COOKIE_SECRET="$(base64 /dev/urandom | head -c 64)"
 export OAUTH_COOKIE_SECRET
 
+# Bring in more environment variables.
+source /opt/bb-file-server/.secrets/oauth-firewall.env
+
 # For general use.
 HOSTNAME="$(hostname)"
 export HOSTNAME
