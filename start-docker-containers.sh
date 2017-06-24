@@ -38,7 +38,7 @@ MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 EOF
 
 # Generate a random cookie secret because we don't need to remember it after each reboot. It'll just cause a re-auth.
-OAUTH_COOKIE_SECRET="$(base64 /dev/urandom | head -c 64)"
+OAUTH_COOKIE_SECRET="$(base64 /dev/urandom | head -c 32)"
 export OAUTH_COOKIE_SECRET
 
 # Bring in more environment variables.
