@@ -1,4 +1,4 @@
-version: "3"
+version: "3.2"
 
 services:
   portainer:
@@ -122,6 +122,8 @@ services:
     image: linuxserver/letsencrypt
     # network_mode: host
     restart: always
+    env_file:
+    - /opt/bb-file-server/.secrets/letsencrypt.env
     environment:
     - PUID=1000
     - PGID=1000
@@ -129,8 +131,6 @@ services:
     - URL=duckdns.org
     - ONLY_SUBDOMAINS=true
     - DHLEVEL=2048
-    env_file:
-    - /opt/bb-file-server/.secrets/letsencrypt.env
     networks:
     - web
     ports:
@@ -143,6 +143,8 @@ services:
     restart: always
     build:
       context: /opt/bb-file-server/oauth-firewall/
+    env_file:
+    - /opt/bb-file-server/.secrets/oauth-firewall.env
     environment:
     - PUID=1000
     - PGID=1000
@@ -206,6 +208,6 @@ services:
 networks:
   web:
 
-secrets:
-  mysql_root_pass:
-    file: /opt/bb-file-server/.secrets/mysql_root_pass.txt
+# secrets:
+#   mysql_root_pass:
+#     file: /opt/bb-file-server/.secrets/mysql_root_pass.txt
