@@ -112,9 +112,10 @@ configurePowerButton() {
 
   sudo dnf install -y acpid
 
-  sudo cp -p /etc/acpi/actions/power.sh{,-orig}
-  ln -s power-button.sh /etc/acpi/actions/power.sh
-  # cp power-button.sh /etc/acpi/actions/power.sh
+  if [ ! -e '/etc/acpi/actions/power.sh-orig' ]; then
+    sudo cp -p /etc/acpi/actions/power.sh{,-orig}
+  fi
+  ln -sf "${SCRIPTPATH}/power-button.sh" /etc/acpi/actions/power.sh
 
   sudo systemctl enable acpid.service
   sudo systemctl start acpid.service
