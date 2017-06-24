@@ -184,10 +184,13 @@ EOF
   IFS= read -r oauthFirewallClientSecret
 
   # OAuth general config.
-  tee /opt/bb-file-server/.secrets/oauth-firewall.env <<-EOF > /dev/null 2>&1
+  tee /opt/bb-file-server/.secrets/oauth-firewall.sh <<-EOF > /dev/null 2>&1
 OAUTH_REDIRECT_URL=${oauthFirewallRedirectURL}
 OAUTH_CLIENT_ID=${oauthFirewallClientID}
 OAUTH_CLIENT_SECRET=${oauthFirewallClientSecret}
+export OAUTH_REDIRECT_URL
+export OAUTH_CLIENT_ID
+export OAUTH_CLIENT_SECRET
 EOF
 
 
