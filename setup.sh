@@ -75,11 +75,13 @@ setupDocker() {
   echo 'Setting up docker & docker-compose...'
 
   # Ensure the versions of docker released prior to "Moby" are removed.
+  set +e
   sudo dnf remove -y docker \
     docker-common \
     container-selinux \
     docker-selinux \
     docker-engine
+  set -e
 
   # Install the latest available Docker, Community Edition.
   # https://docs.docker.com/engine/installation/linux/fedora/#install-using-the-repository
