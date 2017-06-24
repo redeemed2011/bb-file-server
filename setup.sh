@@ -100,11 +100,14 @@ setupDocker() {
   # Install docker-compose via pip.
   sudo pip install docker-compose
 
-  # Allow all docker containers to cross-communicate.
+  # Allow all docker containers to cross-communicate; but allow these commands to error, which happens whenever the
+  # firewall is disabled.
   #sudo iptables -I INPUT 1 -i docker0 -j ACCEPT
   #sudo firewall-cmd --permanent --zone=FedoraServer --change-interface=docker0
+  set +e
   sudo firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 1 -i docker0 -j ACCEPT
   sudo firewall-cmd --reload
+  set -e
 
   echo 'Done setting up docker & docker-compose.'
 }
