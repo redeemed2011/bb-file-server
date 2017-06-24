@@ -137,7 +137,7 @@ runConfigWizard() {
   local oauthFirewallClientID
   local oauthFirewallClientSecret
 
-  echo "\n\nRun configuration? [Y/N] "
+  printf "\n\nRun configuration? [Y/N] "
 
   # Bash specific because of "-n N".
   IFS= read -n 1 -r userChoice
@@ -152,9 +152,9 @@ runConfigWizard() {
 
 
   # Prompt for DuckDNS values.
-  echo "\n\nDuckDNS subdomains value:"
+  printf "\n\nDuckDNS subdomains value:"
   IFS= read -r duckdnsSubDomains
-  echo "\n\nDuckDNS token value:"
+  printf "\n\nDuckDNS token value:"
   IFS= read -r duckdnsToken
 
   # Save DuckDNS enironment file.
@@ -165,7 +165,7 @@ EOF
 
 
   # Prompt for LetsEncrypt email.
-  echo "\n\nLetsEncrypt email value:"
+  printf "\n\nLetsEncrypt email value:"
   IFS= read -r letsencryptEmail
 
   # Save LetsEncrypt enironment file.
@@ -176,11 +176,11 @@ EOF
 
 
   # Prompt for OAuth Firewall values.
-  echo "\n\nOAuth Firewall redirect URL:"
+  printf "\n\nOAuth Firewall redirect URL:"
   IFS= read -r oauthFirewallRedirectURL
-  echo "\n\nOAuth Firewall client ID:"
+  printf "\n\nOAuth Firewall client ID:"
   IFS= read -r oauthFirewallClientID
-  echo "\n\nOAuth Firewall client secret:"
+  printf "\n\nOAuth Firewall client secret:"
   IFS= read -r oauthFirewallClientSecret
 
   # OAuth general config.
@@ -192,7 +192,7 @@ EOF
 
 
   # OAuth Firewall authorized emails list.
-  echo "\n\nPress ENTER when you are ready to open an editor to populate the OAuth Firewall's allowed email addresses file. Put a single email address on each line."
+  printf "\n\nPress ENTER when you are ready to open an editor to populate the OAuth Firewall's allowed email addresses file. Put a single email address on each line."
   # Create the file if it does not exist.
   if [ ! -e '/data/oauth-firewall/authorized_emails' ]; then
     tee /data/oauth-firewall/authorized_emails <<-"EOF" > /dev/null 2>&1
