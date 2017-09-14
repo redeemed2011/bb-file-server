@@ -38,8 +38,10 @@ setupDataPaths() {
 
   sudo chown -R ${USER}: /data
 
-  mkdir -p /data/media/{movies,pictures,shorts,tv\ shows,videos}
-  mkdir -p /data/{freshrss,letsencrypt,makemkv,mariadb,oauth-firewall,openvpn-as,plex,portainer,resilio-sync/{config,folders/sync},syncthing/{config,folders},vms}
+  mkdir -p /data/media/{movies,movies-recorded,pictures,shorts,tv-shows,tv-shows-recorded,videos}
+  mkdir -p /data/{freshrss,letsencrypt,makemkv,mariadb,oauth-firewall,openvpn-as,plex/{config,transcode},portainer,resilio-sync/{config,folders/sync},syncthing/{config,folders},vms}
+
+  sudo chown -R ${USER}: /data
 
   # Disable CoW for key folders:
   chattr +C /data/vms
@@ -218,6 +220,12 @@ setupBBFileService() {
   echo 'Done setting up bb-file-server service.'
 }
 
+setupWok() {
+  sudo dnf install -y \
+    'https://github.com/kimchi-project/kimchi/releases/download/2.5.0/wok-2.5.0-0.fc25.noarch.rpm' \
+    'https://github.com/kimchi-project/kimchi/releases/download/2.5.0/kimchi-2.5.0-0.fc25.noarch.rpm'
+}
+
 
 
 increaseInotifyWatch
@@ -228,6 +236,7 @@ configurePowerButton
 setupDocker
 runConfigWizard
 setupBBFileService
+setupWok
 
 
 
