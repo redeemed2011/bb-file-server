@@ -73,6 +73,20 @@ generalSystemSetup() {
   echo "Done disabling avahi (mdns)."
 }
 
+enableNestedVirt() {
+  # Learned from https://www.server-world.info/en/note?os=Fedora_25&p=kvm&f=8
+  sudo tee /etc/modprobe.d/kvm-nested.conf <<-EOF > /dev/null 2>&1
+options kvm_intel nested=1
+EOF
+
+  set +e
+  # Unload KVM Intel module.
+  sudo modprobe -r kvm_intel
+  # Load the KVM Intel module.
+  sudo modprobe kvm_intel
+  set -e
+}
+
 setupDocker() {
   echo 'Setting up docker & docker-compose...'
 
@@ -232,6 +246,7 @@ increaseInotifyWatch
 enableSmartmon
 setupDataPaths
 generalSystemSetup
+enableNestedVirt
 configurePowerButton
 setupDocker
 runConfigWizard
