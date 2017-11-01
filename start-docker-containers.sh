@@ -33,6 +33,7 @@ fi
 
 # Generate mysql container environment file.
 MYSQL_ROOT_PASSWORD="$(cat /opt/bb-file-server/.secrets/mysql_root_pass.txt)"
+export MYSQL_ROOT_PASSWORD
 tee /opt/bb-file-server/.secrets/mysql.env <<-EOF > /dev/null 2>&1
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 EOF

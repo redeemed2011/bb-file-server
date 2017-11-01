@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3"
 
 services:
 #  proxy:
@@ -60,10 +60,48 @@ services:
     - /opt/bb-file-server/.secrets/mysql.env
     networks:
     - web
+    - local
     ports:
     - 3306:3306
     volumes:
     - /data/mariadb:/config
+
+  guacd:
+    image: guacamole/guacd
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    networks:
+    - web
+    - local
+#    - hostnet
+
+  guac:
+    image: guacamole/guacamole
+    restart: always
+    environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Chicago
+    - MYSQL_HOSTNAME=mariadb
+    - MYSQL_PORT=3306
+    - MYSQL_DATABASE=guacamole
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    - GUACD_HOSTNAME=guacd
+    - GUACD_PORT=4822
+    depends_on:
+    - mariadb
+    - guacd
+    networks:
+    - web
+    - local
+    ports:
+    - 8080:8080
+
+
 
   duckdns:
     image: linuxserver/duckdns
@@ -99,8 +137,8 @@ services:
     privileged: true
     restart: always
     environment:
-    - PUID=1000
-    - PGID=1000
+    - PUID=0
+    - PGID=0
     - TZ=America/Chicago
     ports:
     - 8888:8888
@@ -211,8 +249,9 @@ services:
 
   plex:
     # image: linuxserver/plex
-    image: uirel/lsio-plex-comskip
+    # image: uirel/lsio-plex-comskip
     # build: ./docker/plex
+    build: https://github.com/Poag/lsio-plex-comskip.git
     restart: always
     privileged: true
     network_mode: host
@@ -239,6 +278,9 @@ services:
     - /data/plex/transcode:/transcode
 
 networks:
+  hostnet:
+    external:
+      name: host
   local:
     driver: bridge
   web:
