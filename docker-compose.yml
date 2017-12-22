@@ -155,23 +155,25 @@ services:
     volumes:
     - /data/resilio-sync/config:/config
     - /data/resilio-sync/folders:/sync
+    - /data/media:/sync/media
 
-  syncthing:
-    image: linuxserver/syncthing
-    network_mode: host
-    privileged: true
-    restart: always
-    environment:
-    - PUID=1000
-    - PGID=1000
-    - TZ=America/Chicago
-    #ports:
-    #- 8384:8384
-    #- 21027:21027
-    #- 22000:22000
-    volumes:
-    - /data/syncthing/config:/config
-    - /data/syncthing/folders:/sync
+#  syncthing:
+#    image: linuxserver/syncthing
+#    network_mode: host
+#    privileged: true
+#    user: root
+#    restart: always
+#    environment:
+#    - PUID=1000
+#    - PGID=1000
+#    - TZ=America/Chicago
+#    #ports:
+#    #- 8384:8384
+#    #- 21027:21027
+#    #- 22000:22000
+#    volumes:
+#    - /data/syncthing/config:/config
+#    - /data/syncthing/folders:/sync
 
   freshrss:
     image: linuxserver/freshrss
